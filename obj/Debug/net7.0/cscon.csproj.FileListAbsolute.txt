@@ -1,0 +1,15 @@
+C:\Users\BobcatUser\cspathfinder\cscon\bin\Debug\net7.0\cscon.exe
+C:\Users\BobcatUser\cspathfinder\cscon\bin\Debug\net7.0\cscon.deps.json
+C:\Users\BobcatUser\cspathfinder\cscon\bin\Debug\net7.0\cscon.runtimeconfig.json
+C:\Users\BobcatUser\cspathfinder\cscon\bin\Debug\net7.0\cscon.dll
+C:\Users\BobcatUser\cspathfinder\cscon\bin\Debug\net7.0\cscon.pdb
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.csproj.AssemblyReference.cache
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.AssemblyInfoInputs.cache
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.AssemblyInfo.cs
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.csproj.CoreCompileInputs.cache
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.dll
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\refint\cscon.dll
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.pdb
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\cscon.genruntimeconfig.cache
+C:\Users\BobcatUser\cspathfinder\cscon\obj\Debug\net7.0\ref\cscon.dll
