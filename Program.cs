@@ -1,4 +1,26 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
+//Server: roborio-177-frc.local
+//Table: SmartDashboard
+/*
+    NOTICE: HOW TO INPUT DATA
+    
+    Input ONLY numbers
+    Separate by ONE space
+    each new string in "args" is a new polygon pas the overall start and end points
+    enter said numbers in this order:
+    1. x val of overall start point
+    2. y val of overall start point
+    3. New string in args
+    4. x val of overall end point
+    5. y val of overall end point
+    6. Steps a through c for each polygon
+        a. New string in args
+        b. x val of one polygon vertice
+        c. y val of that same polygon vertice
+*/
+
+
 /*
 How it (will) work:
 
@@ -20,26 +42,63 @@ using System;
 
 public class Program {
     public List<Path> paths;
+    public int argIndex;
     public static void Main(string[] args) {
-        Polygon[] presetPolygons = new Polygon[] {};
-    }
-    //separate method so the entire code doesn't have to be re - executed every time
-    public List<Path> FindPath(Polygon[] p, Path initialPath) {
-        List<Path> paths = new List<Path>();
-        //code to add paths to a list called "paths"
+        Program p = new Program();
+        List<Polygon> presetPolygons = new List<Polygon>();
+        p.argIndex = 0;
 
-        //find all polygons that are in the journey's range.
-        //
+        
+        //start point and end point (in the first and second arg strings)
+        double[] sp = new double[] {p.ParseArgs(args[0]), p.ParseArgs(args[0])};
+        p.argIndex = 0;
+        double[] ep = new double[] {p.ParseArgs(args[1]), p.ParseArgs(args[1])};
+
+        //create initial path
+        Path iPath = new Path(sp, ep);
+
+        List<Node> tempNodes = new List<Node>();
+
+        //add each polygon from the given args (each string is a separate one)
+        foreach (string s in args) {
+            //while the index is less than the length (if less than or equal it would 
+            //increase the index in the ParseArgs method past the array limit)
+            while (p.argIndex < s.Length - 1) {
+                //Add a new node to the tempnodes variable with the next 2 parsed nodes
+                tempNodes.Add(new Node(p.ParseArgs(s), p.ParseArgs(s)));
+            }
+            //add a new polygon to the preset ones with the temp nodes
+            presetPolygons.Add(new Polygon(tempNodes));
+            //clear tempNodes
+            tempNodes = new List<Node>();
+            //reset argIndex for the next string
+            p.argIndex = 0;
+        }
+
+        
+
+        //Find paths (actual algorithm)
+        List<Path> pathData = p.FindPaths(presetPolygons, iPath);
+        //decode the data into pairs of coords and export it somehow
+        double[,] exportData = p.GetPaths(pathData);
+    }
+    public List<Path> FindPaths(List<Polygon> p, Path initialPath) {
+        List<Path> paths = new List<Path>();
+        
+        /*
+        ACTUAL CODE FOR PATHFINDING
+        
+        RESUME WORK HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE
+        */
 
         //below is an <<<EXAMPLE>>> to prevent unassigned variable errors
         paths.Add(new Path(new double[] {0, 0}, new double[] {0, 0}));
         return paths;
     }
     //Call this from the outside
-    public double[,] GetPaths() {
+    public double[,] GetPaths(List<Path> paths) {
         //decode the list of paths into points
         //return statement just to get rid of error for now
-        //access the paths variable of the Program class
         return new double[,] {{}};
     }
     //find if 2 lines are intersecting
@@ -79,6 +138,18 @@ public class Program {
             return false;
         }
     }
+    //parses a number from a spot in a string separated by spaces
+    public double ParseArgs (string a) {
+        string num = "";
+        while (a[argIndex] != ' ') {
+            num += a[argIndex];
+            argIndex++;
+        }
+        //increase it again so it doesn't start on a space again
+        argIndex++;
+        return Double.Parse(num);
+    }
+    
 }
 public class Path {
     public Path (double[] sP, double[] eP) {
