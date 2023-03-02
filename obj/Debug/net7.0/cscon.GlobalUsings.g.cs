@@ -6,3 +6,6 @@ global using global::System.Linq;
 global using global::System.Net.Http;
 global using global::System.Threading;
 global using global::System.Threading.Tasks;
+
+//Congrats! You found this by (probably) caring enough to look at the commit messages, and saw one of them on this file!
+//Thanks!

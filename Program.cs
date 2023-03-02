@@ -1,7 +1,47 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+//Note to self (networktables):
 //Server: roborio-177-frc.local
 //Table: SmartDashboard
+
+/*
+    HOW TO INTERPRET EXPORTED DATA:
+
+    The exported data is in a 2D double array, with each inner array having two values: the x and the y of each coord
+    (respectively). These coords form the start point of all the paths, the vertices connecting them, and the end point
+    of them all. The start point should be the Robot's current position, so I'm keeping it in for testing (and because
+    I'm too lazy to change it)
+*/
+
+/*
+    TO DO:
+
+    - Networktables
+        - Set up a newtork table
+        - Publish to a network table
+        - Implement code taking in data from networktable
+    - Algorithms
+        - Pathfinding
+            - Finding lines the original journey intersects
+            - Finding lines each journey that comes afterward intersects
+            - Get all possible paths
+            - Brute force the best paths (least distance)
+            - Get new path between the closest point to the endpoint and the actual endpoint
+            - Repeating this
+    - Testing
+        - Node creation from args
+        - Polygon creation from args
+        - Finding shortest path
+        - Decoding path data
+        - Sending correct data to a networktable.
+    - Optimizing
+        - Clean up code format
+        - Remove unecessary comments
+        - Remove unecessary variables/reduce memory
+        - <Other stuff I'm never gonna end up doing>
+
+*/
+
 /*
     NOTICE: HOW TO INPUT DATA
     
@@ -50,9 +90,9 @@ public class Program {
 
         
         //start point and end point (in the first and second arg strings)
-        double[] sp = new double[] {p.ParseArgs(args[0]), p.ParseArgs(args[0])};
+        Node sp = new Node(p.ParseArgs(args[0]), p.ParseArgs(args[0]));
         p.argIndex = 0;
-        double[] ep = new double[] {p.ParseArgs(args[1]), p.ParseArgs(args[1])};
+        Node ep = new Node(p.ParseArgs(args[1]), p.ParseArgs(args[1]));
 
         //create initial path
         Path iPath = new Path(sp, ep);
@@ -92,14 +132,27 @@ public class Program {
         */
 
         //below is an <<<EXAMPLE>>> to prevent unassigned variable errors
-        paths.Add(new Path(new double[] {0, 0}, new double[] {0, 0}));
+        paths.Add(new Path(new Node(0, 0), new Node (0, 0)));
         return paths;
     }
     //Call this from the outside
     public double[,] GetPaths(List<Path> paths) {
+        //create a new 2D array representing coords with the amount of them being the # of paths + 1 (because one at each
+        //path's end + one at the first one's beginning: ._._._. 4 nodes, 3 lines)
+        double[,] coords = new double[paths.Count + 1, 2];
+
+        //set the first coords to be the starting path's startpoint
+        coords[0, 0] = paths[0].StartPoint.x;
+        coords[0, 1] = paths[0].StartPoint.y;
+
+        //set the rest of the coords to be the rest of the paths' endpoints
+        for (int i = 0; i < paths.Count - 1; i++) {
+            coords[i, 0] = paths[i].EndPoint.x;
+            coords[i, 1] = paths[i].EndPoint.y;
+        }
         //decode the list of paths into points
         //return statement just to get rid of error for now
-        return new double[,] {{}};
+        return coords;
     }
     //find if 2 lines are intersecting
     public bool LinesIntersecting (Line l1, Line l2) {
@@ -152,33 +205,16 @@ public class Program {
     
 }
 public class Path {
-    public Path (double[] sP, double[] eP) {
+    public Path (Node sP, Node eP) {
         StartPoint = sP;
         EndPoint = eP;
     }
-    private double[] startPoint;
-    public double[] StartPoint {
-        get {return startPoint;}
-        //Only set startpoint if value can be coordinates. Otherwise, set the x and y to the first and second values
-        //Same with endPoint
-        set {
-            if (value.Length == 2) {
-                startPoint = value;
-            } else {
-                startPoint[0] = value[0]; 
-                startPoint[1] = value[1];}
-            }
+    private Node startPoint;
+    public Node StartPoint {
+        get; set;
     }
-    private double[] endPoint;
-    public double[] EndPoint {
-        get {return endPoint;}
-        //Only set endpoint if value can be coordinates. Otherwise, set the x and y to the first and second values
-        set {
-            if (value.Length == 2) {
-                endPoint = value;
-            } else {
-                endPoint[0] = value[0]; 
-                endPoint[1] = value[1];}
-            }
+    private Node endPoint;
+    public Node EndPoint {
+        get; set;
     }
 }
