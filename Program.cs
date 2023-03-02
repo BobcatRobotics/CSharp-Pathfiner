@@ -122,14 +122,61 @@ public class Program {
         //decode the data into pairs of coords and export it somehow
         double[,] exportData = p.GetPaths(pathData);
     }
-    public List<Path> FindPaths(List<Polygon> p, Path initialPath) {
+    //only have polygons passed in be ones that have a CHANCE of being intersected: Like, they're not all the way on the
+    //other side of the field
+    public List<Path> FindPaths(List<Polygon> polys, Path initialPath) {
         List<Path> paths = new List<Path>();
         
         /*
         ACTUAL CODE FOR PATHFINDING
         
-        RESUME WORK HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE
+        
         */
+        List<Polygon> intersectedPolygons = new List<Polygon>();
+        //the path stemming from the end of each polygon to the endPoint (run this one through the algorithm)
+        Line pathToEndpoint = new Line(initialPath.StartPoint, initialPath.EndPoint);
+        List<Node> possiblePathVertices = new List<Node>();
+        List<Line> possibleLines = new List<Line>();
+        foreach (Polygon p in polys) {
+            //execute pathfinding steps for each polygon here
+            possiblePathVertices.Add(initialPath.StartPoint);
+            possiblePathVertices.Add(initialPath.EndPoint);
+            for (int i = 0; i < p.lines.Count - 1; i++) {
+                //the lines were created based on each vertice in a foreach loop, meaning the connected ones share the 
+                //same index in their respective arrays
+                if (LinesIntersecting(p.lines[i], pathToEndpoint)) {
+                    possiblePathVertices.Add(p.vertices[i]);
+                }
+            }
+            //add each combination of lines to the possible lines (if they don't go through the polygon itself)
+            
+            //for each combination of 2 nodes in the possible path vertices...
+            for (int i = 0; i < possiblePathVertices.Count; i++) {
+                for (int j = 0; j < possiblePathVertices.Count; j++) {
+                    //...if they don't equal each other...
+                    if (i != j) {
+                        ///...check if a line between them goes through the polygon...
+                        Line l = new Line (possiblePathVertices[i], possiblePathVertices[j]);
+                        bool goingThroughPolygon = false;
+                        foreach (Line li in p.lines) {
+                            //so goingThroughPolygon is set true and stays true (the break statement)
+                            if (LinesIntersecting(li, l)) {
+                                
+                                goingThroughPolygon = true;
+                                break;
+                            }
+                        }
+                        if (goingThroughPolygon) {
+                            //make a new one instead of using l because l is temporary
+                            possibleLines.Add(new Line(l.start, l.end));
+                            //RESUME WORK HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE
+                        }
+                        
+                    }
+                    
+                }   
+            }
+        }
 
         //below is an <<<EXAMPLE>>> to prevent unassigned variable errors
         paths.Add(new Path(new Node(0, 0), new Node (0, 0)));
@@ -203,18 +250,4 @@ public class Program {
         return Double.Parse(num);
     }
     
-}
-public class Path {
-    public Path (Node sP, Node eP) {
-        StartPoint = sP;
-        EndPoint = eP;
-    }
-    private Node startPoint;
-    public Node StartPoint {
-        get; set;
-    }
-    private Node endPoint;
-    public Node EndPoint {
-        get; set;
-    }
 }

@@ -63,7 +63,12 @@ public struct Line {
     public bool slopeIsUndefined;
     //b value
     public double intercept;
+
+    public Node start;
+    public Node end;
     public Line (Node startPoint, Node endPoint) {
+        start = startPoint;
+        end = endPoint;
         if (startPoint.x == endPoint.x) {
             //if the slope is infinite/negative infinite
             slopeIsUndefined = true;
@@ -81,3 +86,18 @@ public struct Line {
         }
     }
 }
+public class Path {
+    public Path (Node sP, Node eP) {
+        StartPoint = sP;
+        EndPoint = eP;
+    }
+    private Node startPoint;
+    public Node StartPoint {
+        get; set;
+    }
+    private Node endPoint;
+    public Node EndPoint {
+        get; set;
+    }
+}
+
