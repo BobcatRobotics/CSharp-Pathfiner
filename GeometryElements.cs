@@ -63,6 +63,7 @@ public struct Line {
     public bool slopeIsUndefined;
     //b value
     public double intercept;
+    public double length;
 
     public Node start;
     public Node end;
@@ -84,6 +85,7 @@ public struct Line {
         } else {
             xrange = new double[] {endPoint.x, startPoint.x};
         }
+        length = Math.Sqrt(Math.Pow(startPoint.y - endPoint.y, 2) + Math.Pow(startPoint.y - endPoint.y, 2));
     }
 }
 public class Path {

@@ -1,0 +1,31 @@
+HOW IT (should) WORK:
+
+1. Create line equation from start point to end point ("journey base")
+2. For each polygon, create lines from the center to the vertices ("center lines")
+3. Check which center lines the journey base intersects
+4. Split the journey base into multiple possible lines going to each vertices' center lines it intersects, to the next
+    one, and to the endpoint (Note: make sure these lines don't intersect any center lines, or the machine might try 
+    to go through the obstacle)
+5. Go through all possible combinations of them to see which has the shortest distance
+6. Make the last line of them the new journey base
+7. Repeat for all obstacles
+
+(Steps and Corresponding Numbers in attatched photo)
+
+------------------------------------------------------------------------------------------------------------------------
+
+NOTICE: HOW TO INPUT DATA
+    
+    Input ONLY numbers
+    Separate by ONE space
+    each new string in "args" is a new polygon pas the overall start and end points
+    enter said numbers in this order:
+    1. x val of overall start point
+    2. y val of overall start point
+    3. New string in args
+    4. x val of overall end point
+    5. y val of overall end point
+    6. Steps a through c for each polygon
+        a. New string in args
+        b. x val of one polygon vertice
+        c. y val of that same polygon vertice

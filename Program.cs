@@ -42,45 +42,11 @@
 
 */
 
-/*
-    NOTICE: HOW TO INPUT DATA
-    
-    Input ONLY numbers
-    Separate by ONE space
-    each new string in "args" is a new polygon pas the overall start and end points
-    enter said numbers in this order:
-    1. x val of overall start point
-    2. y val of overall start point
-    3. New string in args
-    4. x val of overall end point
-    5. y val of overall end point
-    6. Steps a through c for each polygon
-        a. New string in args
-        b. x val of one polygon vertice
-        c. y val of that same polygon vertice
-*/
-
-
-/*
-How it (will) work:
-
-1. Create line equation from start point to end point ("journey base")
-2. For each polygon, create lines from the center to the vertices ("center lines")
-3. Check which center lines the journey base intersects
-4. Split the journey base into multiple possible lines going to each vertices' center lines it intersects, to the next
-    one, and to the endpoint (Note: make sure these lines don't intersect any center lines, or the machine might try 
-    to go through the obstacle)
-5. Go through all possible combinations of them to see which has the shortest distance
-6. Make the last line of them the new journey base
-7. Repeat for all obstacles
-
-(Steps and Corresponding Numbers in attatched photo)
-*/
-
 using System;
 //NOTE: OTHER CLASSES AND STUFF ALREADY ACCESSED FROM THE GEOMETRYELEMENTS FILE - NO NEED TO IMPORT/SAY "using ____;"
 
 public class Program {
+    private double total;
     public List<Path> paths;
     public int argIndex;
     public static void Main(string[] args) {
@@ -166,16 +132,17 @@ public class Program {
                                 break;
                             }
                         }
-                        if (goingThroughPolygon) {
+                        if (!goingThroughPolygon) {
                             //make a new one instead of using l because l is temporary
                             possibleLines.Add(new Line(l.start, l.end));
-                            //RESUME WORK HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE
+                            
                         }
                         
                     }
                     
                 }   
             }
+
         }
 
         //below is an <<<EXAMPLE>>> to prevent unassigned variable errors
@@ -200,6 +167,29 @@ public class Program {
         //decode the list of paths into points
         //return statement just to get rid of error for now
         return coords;
+    }
+    public void sumLengths (List<Line> currentLines, List<Line> connectingLines) {
+        //recurse this function through all connecting lines to find the fastest combination for each branch
+        foreach (Line l in currentLines) {
+            //adds all the lines connecting to the "current" line's end
+            List<Line> nextLines = new List<Line>();
+            foreach (Line ln in connectingLines) {
+                //don't need to check if they are different because noline has the same start and end points
+                if (ln.start == l.end) {
+                    nextLines.Add(ln);
+                }
+            }
+            //take all those lines that are connected and do the same (if not the end)
+            if (nextLines.Count != 0) {
+                
+                sumLengths(nextLines, connectingLines);
+            }
+            else {
+                //when it reaches the end
+                total += l.length;
+            }
+            //RESUME AROUND HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE
+        }
     }
     //find if 2 lines are intersecting
     public bool LinesIntersecting (Line l1, Line l2) {
