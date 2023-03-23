@@ -95,8 +95,6 @@ public class Program {
         
         /*
         ACTUAL CODE FOR PATHFINDING
-        
-        
         */
         List<Polygon> intersectedPolygons = new List<Polygon>();
         //the path stemming from the end of each polygon to the endPoint (run this one through the algorithm)
@@ -168,28 +166,23 @@ public class Program {
         //return statement just to get rid of error for now
         return coords;
     }
-    public void sumLengths (List<Line> currentLines, List<Line> connectingLines) {
-        //recurse this function through all connecting lines to find the fastest combination for each branch
-        foreach (Line l in currentLines) {
-            //adds all the lines connecting to the "current" line's end
-            List<Line> nextLines = new List<Line>();
-            foreach (Line ln in connectingLines) {
-                //don't need to check if they are different because noline has the same start and end points
-                if (ln.start == l.end) {
-                    nextLines.Add(ln);
-                }
-            }
-            //take all those lines that are connected and do the same (if not the end)
-            if (nextLines.Count != 0) {
-                
-                sumLengths(nextLines, connectingLines);
-            }
-            else {
-                //when it reaches the end
-                total += l.length;
-            }
-            //RESUME AROUND HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE
-        }
+    public void findShortestDistance (List<Line> currentLines, List<Line> connectingLines) {
+        /*
+        How to:
+        1. Create a list of indexes (starting at one, the number being 0)
+        2. Create a list of routes
+        3. Create a list acting as the current route
+        4. Start at startpoint or endpoint of a line in the current routes list
+        5. 
+            a. If there are lines that connect to it, make a list of them then go to first line in that list (then go to step 2)
+                Add this line to the current route in the routes list
+                Also, add another number to the indexes list, starting at 0
+            b. If this line is the last one in its branch, remove that index in the index array and start from the branch above
+            c. If neither, start creating another route on the routes list and go back to the previous line, working with that route now
+                Also, when going back up, increase the index at that next spot and use that to check the next line
+        4. Sum the lengths of the lines in each route for the routes list and see which one takes the least amount of time
+        5. Return that route
+        */
     }
     //find if 2 lines are intersecting
     public bool LinesIntersecting (Line l1, Line l2) {
