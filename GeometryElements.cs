@@ -102,4 +102,15 @@ public class Path {
         get; set;
     }
 }
+public class Route {
+    List<Path> paths;
+    public Route (List<Path> p)
+    {
+        paths = p;
+    }
+    //argumentless constructor for just adding paths and not immediately initializing them
+    public Route() {
+        paths = new List<Path>();
+    }
+}
 

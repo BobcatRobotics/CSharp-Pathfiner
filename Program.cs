@@ -166,7 +166,7 @@ public class Program {
         //return statement just to get rid of error for now
         return coords;
     }
-    public void findShortestDistance (List<Line> currentLines, List<Line> connectingLines) {
+    public void findShortestDistance (List<Line> connectingLines) {
         /*
         How to:
         1. Create a list of indexes (starting at one, the number being 0)
@@ -183,6 +183,13 @@ public class Program {
         4. Sum the lengths of the lines in each route for the routes list and see which one takes the least amount of time
         5. Return that route
         */
+
+        //IMPORTANT: MAKE SURE A TRIANGLE DOESN'T FORM SO IT KEEPS GOING IN A LOOP FOREVER (possibly by making sure that each line in a route doesn't intersect a previous one?)
+        List<int> indexes = new List<int> {0};
+        List<Route> routes = new List<Route>();
+        Route currentRoute = new Route();
+
+
     }
     //find if 2 lines are intersecting
     public bool LinesIntersecting (Line l1, Line l2) {
