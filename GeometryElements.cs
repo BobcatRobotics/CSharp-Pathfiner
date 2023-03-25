@@ -103,14 +103,27 @@ public class Path {
     }
 }
 public class Route {
-    List<Path> paths;
+    public List<Path> paths;
+    public List<Line> lines;
     public Route (List<Path> p)
     {
         paths = p;
+        lines = new List<Line>();
+        foreach (Path pa in p) {
+            lines.Add(new Line(pa.StartPoint, pa.EndPoint));
+        }
+    }
+    public Route (List<Line> l) {
+        lines = l;
+        paths = new List<Path>();
+        foreach (Line la in lines) {
+            lines.Add(new Line(la.start, la.end));
+        }
     }
     //argumentless constructor for just adding paths and not immediately initializing them
     public Route() {
         paths = new List<Path>();
+        lines = new List<Line>();
     }
 }
 

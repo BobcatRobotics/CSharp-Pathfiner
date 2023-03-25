@@ -166,7 +166,7 @@ public class Program {
         //return statement just to get rid of error for now
         return coords;
     }
-    public void findShortestDistance (List<Line> connectingLines) {
+    public void findShortestDistance (List<Line> connectingLines, Node startPoint) {
         /*
         How to:
         1. Create a list of indexes (starting at one, the number being 0)
@@ -189,6 +189,81 @@ public class Program {
         List<Route> routes = new List<Route>();
         Route currentRoute = new Route();
 
+        //the point from which to check from
+        Node currentNode = startPoint;
+
+        //since routes don't need to contain lines going in a path, but just a list, use this to store the sets of
+        //lines, from which certain ones can be accessed by the indexes list
+        List<Route> lineHeirarchy = new List<Route>();
+        
+        List<Line> availableLines = new List<Line>();
+
+        bool allRoutesFound = true;
+
+        List<Node> nodes = new List<Node>();
+
+        //breeak loop once endpoint reached, keep repeating to get all routes
+        //NOTICE:  AS OF NOW, LOOP ISNT SUPPOSED TO ACTUALLY LOOP (still have to set the currentNode each time)
+        while (!allRoutesFound)  {
+            //set the available lines to find this part of the heirarchy
+            //do this and then set it because it checks through all previous parts of the heirarchy and doing that
+            //while setting it might cause problems
+            availableLines.Clear();
+            foreach (Line l in connectingLines) {
+                foreach (Route r in lineHeirarchy) {
+                    //If the line hasn't already been used in the heirarchy (To prevent infinite loops)
+                    if (!r.lines.Contains(l)) {
+                        availableLines.Add(l);
+                    }
+                }
+            }
+            //narrow down availableLines to the ones that connect to the previous one
+            foreach (Line l in availableLines) {
+                //if this line doesn't connect to the previous one
+                if (!(l.start == currentNode || l.end == currentNode)) {
+                    availableLines.Remove(l);
+                }
+            }
+            //CHECK IF AVAILABLE LINES IS EMPTY HERE AND GO BACK UP THE HEIRARCHY AND INCREASE THE APPROPRIATE INDEX
+            if (availableLines.Count() == 0) {
+                Route newRoute = new Route(); //lol
+                for (int i = 0; i < indexes.Count(); i++) {
+                    //add each line that was used
+                    newRoute.lines.Add(lineHeirarchy[i].lines[indexes[i]]);
+                }
+                //add this new route to the routes list
+                routes.Add(new Route(newRoute.lines));
+                
+                //if no more lines
+                while (lineHeirarchy[indexes.Count()].lines.Count() < indexes[indexes.Count() - 1] + 1) {
+                    //keep going back up and checking
+                    
+                }
+                //increase the last index
+                indexes[indexes.Count() - 1]++;
+            }
+            //if the end hasn't been reached: 
+            else 
+            {
+            
+            //set this tier of the line heirarchy to include the available lines; e. g., the lines that connect
+            //to the previous one
+            lineHeirarchy[indexes.Count()] = new Route(availableLines);
+
+            //set the next node in the list of nodes to be c opy of currentNode, then change currentNode
+
+            nodes.Add(new Node(currentNode.x, currentNode.y));
+
+            //set the new currentNode to be the endpoint of the selected line if the previous one was the startpoint
+            //of the line or the other way around
+            if (lineHeirarchy[indexes.Count()].lines[indexes.Count()].start == currentNode) {
+                currentNode = lineHeirarchy[indexes.Count()].lines[indexes.Count()].end;
+            } else {
+                currentNode = lineHeirarchy[indexes.Count()].lines[indexes.Count()].start;
+            }
+            //increase index COUNT here
+            }
+        }
 
     }
     //find if 2 lines are intersecting
