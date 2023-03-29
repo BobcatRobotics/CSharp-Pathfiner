@@ -141,8 +141,11 @@ public class Program {
                 }   
             }
 
-        }
 
+        }
+        /*
+            REFERENCE findShortestRoute() HERE
+        */
         //below is an <<<EXAMPLE>>> to prevent unassigned variable errors
         paths.Add(new Path(new Node(0, 0), new Node (0, 0)));
         return paths;
@@ -166,7 +169,7 @@ public class Program {
         //return statement just to get rid of error for now
         return coords;
     }
-    public void findShortestDistance (List<Line> connectingLines, Node startPoint) {
+    public Route findShortestRoute (List<Line> connectingLines, Node startPoint) {
         /*
         How to:
         1. Create a list of indexes (starting at one, the number being 0)
@@ -198,13 +201,15 @@ public class Program {
         
         List<Line> availableLines = new List<Line>();
 
-        bool allRoutesFound = true;
-
         List<Node> nodes = new List<Node>();
 
         //breeak loop once endpoint reached, keep repeating to get all routes
         //NOTICE:  AS OF NOW, LOOP ISNT SUPPOSED TO ACTUALLY LOOP (still have to set the currentNode each time)
-        while (!allRoutesFound)  {
+        while (true)  {
+            //if there are no more indexes (back at the top)
+            if (indexes.Count != 0) {
+                break;
+            }
             //set the available lines to find this part of the heirarchy
             //do this and then set it because it checks through all previous parts of the heirarchy and doing that
             //while setting it might cause problems
@@ -235,36 +240,64 @@ public class Program {
                 routes.Add(new Route(newRoute.lines));
                 
                 //if no more lines
-                while (lineHeirarchy[indexes.Count()].lines.Count() < indexes[indexes.Count() - 1] + 1) {
-                    //keep going back up and checking
-                    
-                }
-                //increase the last index
+                
+                //delete last index
+                indexes.Remove(indexes[indexes.Count() - 1]);
+                //increase the new last index
                 indexes[indexes.Count() - 1]++;
             }
+            
             //if the end hasn't been reached: 
             else 
             {
+
+                if (lineHeirarchy[indexes.Count() - 1].lines.Count() > indexes[indexes.Count() - 1] + 1) {
+                    //go back up
+
+                    //do this by removing the last index first so it has somewhere to go off of
+                    int currentIndex = indexes[indexes.Count() - 1];
+                    indexes.Remove(currentIndex);
+                    
+                }
+                //set this tier of the line heirarchy to include the available lines; e. g., the lines that connect
+                //to the previous one
+                lineHeirarchy[indexes.Count() - 1] = new Route(availableLines);
+
+                //set the next node in the list of nodes to be c opy of currentNode, then change currentNode
+
+                nodes.Add(new Node(currentNode.x, currentNode.y));
+
+                //set the new currentNode to be the endpoint of the selected line if the previous one was the startpoint
+                //of the line or the other way around
+                if (lineHeirarchy[indexes.Count() - 1].lines[indexes[indexes.Count() - 1]].start == currentNode) {
+                    currentNode = lineHeirarchy[indexes.Count() - 1].lines[indexes[indexes.Count() - 1]].end;
+                } else {
+                    currentNode = lineHeirarchy[indexes.Count() - 1].lines[indexes[indexes.Count() - 1]].start;
+                }
+                //increase index COUNT here
+                indexes[indexes.Count - 1]++;
+            } 
             
-            //set this tier of the line heirarchy to include the available lines; e. g., the lines that connect
-            //to the previous one
-            lineHeirarchy[indexes.Count()] = new Route(availableLines);
-
-            //set the next node in the list of nodes to be c opy of currentNode, then change currentNode
-
-            nodes.Add(new Node(currentNode.x, currentNode.y));
-
-            //set the new currentNode to be the endpoint of the selected line if the previous one was the startpoint
-            //of the line or the other way around
-            if (lineHeirarchy[indexes.Count()].lines[indexes.Count()].start == currentNode) {
-                currentNode = lineHeirarchy[indexes.Count()].lines[indexes.Count()].end;
-            } else {
-                currentNode = lineHeirarchy[indexes.Count()].lines[indexes.Count()].start;
-            }
-            //increase index COUNT here
-            }
+            
+            //if back at the beginning
         }
-
+        //find the best distance
+        double bestDistance = 0;
+        //empty route to prevent the compiler from screaming at me about using an unassigned variable
+        Route bestRoute = new Route();
+        double currentDistance = 0;
+        for (int i = 0; i < routes.Count() - 1; i++) {
+            foreach (Line l in routes[i].lines) {
+                currentDistance += l.length;
+            }
+            //if the route's distance is better than the best, make it the new best route
+            if (currentDistance > bestDistance) {
+                bestRoute = routes[i];
+                bestDistance = currentDistance;
+            }
+            currentDistance = 0;
+        }
+        return bestRoute;
     }
     //find if 2 lines are intersecting
     public bool LinesIntersecting (Line l1, Line l2) {
